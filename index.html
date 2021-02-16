@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+    <!--import bootstrap -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.6/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.1/css/bootstrap4-toggle.min.css"
+        rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.1/js/bootstrap4-toggle.min.js"></script>
+
+
+    <link href="style.css" rel="stylesheet">
+</head>
+
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light sticky-top py-3">
+        <div>
+            <span class="navbar-brand">Concrete Production Monitoring System</span>
+        </div>
+        <button class="navbar-toggler" data-toggle="collapse" data-target="#collapse_target">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="collapse_target">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item"><a class="nav-link" href="./index.html">Home</a></li>
+                <li class="nav-item"><a class="nav-link" href="#">Dashboard</a></li>
+                <li class="nav-item"><a class="nav-link" href="./models.html">Models</a></li>
+                <li class="nav-item"><a class="nav-link" href="#">Prescriptive Analysis</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Type of optimisation Section -->
+    <form id="optimisation-form">
+    <div class="container rounded bg-light mt-5">
+
+        <div class="row">
+            <div class="col">
+                <h4 class="mb-4 text-center"> Select the type of optimisation</h4>
+            </div>
+        </div>
+        <div class="row justify-content-center">
+            <div class="col">
+                <div class="d-flex justify-content-center">
+                    <div class="form-check form-check-inline mr-5">
+                        <input checked class="form-check-input" type="radio" name="optimisationType" id="soo" value="soo">
+                        <label class="form-check-label" for="soo">SOO</label>
+                      </div>
+                      <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="optimisationType" id="moo" value="moo">
+                        <label class="form-check-label" for="moo">MOO</label>
+                      </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Prescription Input Form -->
+    <div class="container rounded bg-light mt-5">
+
+            <h4 class="mb-4 text-center"> Optimise Parmeters</h4>
+
+            <div class="row">
+                <div class="col">
+                    <div class="form-group">
+                        <div class="d-flex justify-content-between">
+                            <label for="cement-optimised">Cement</label>
+                            <input id="cement-optimised" type="checkbox" checked data-toggle="toggle" data-onstyle="success"
+                                data-offstyle="danger" data-size="sm" data-on="Optimised" data-off="Not Optimised">
+                        </div>
+                        <input type="number" name="cement-value" id="Cement" class="form-control">
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="form-group">
+                        <div class="d-flex justify-content-between">
+                            <label for="Blast Furn">Blast Furn</label>
+                            <input type="checkbox" checked data-toggle="toggle" data-onstyle="success"
+                                data-offstyle="danger" data-size="sm" data-on="Optimised" data-off="Not Optimised">
+                        </div>
+                        <input type="number" name="Blast Furn" id="Blast Furn" class="form-control">
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col">
+                    <div class="form-group">
+                        <div class="d-flex justify-content-between">
+                            <label for="Fly Ash">Fly Ash</label>
+                            <input type="checkbox" checked data-toggle="toggle" data-onstyle="success"
+                                data-offstyle="danger" data-size="sm" data-on="Optimised" data-off="Not Optimised">
+                        </div>
+                        <input type="number" name="Fly Ash" id="Fly Ash" class="form-control">
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="form-group">
+                        <div class="d-flex justify-content-between">
+                            <label for="Water">Water</label>
+                            <input type="checkbox" checked data-toggle="toggle" data-onstyle="success"
+                                data-offstyle="danger" data-size="sm" data-on="Optimised" data-off="Not Optimised">
+                        </div>
+                        <input type="number" name="Water" id="Water" class="form-control">
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col">
+                    <div class="form-group">
+                        <div class="d-flex justify-content-between">
+                            <label for="Superplasticizer">Superplasticizer</label>
+                            <input type="checkbox" checked data-toggle="toggle" data-onstyle="success"
+                                data-offstyle="danger" data-size="sm" data-on="Optimised" data-off="Not Optimised">
+                        </div>
+                        <input type="number" name="Superplasticizer" id="Superplasticizer" class="form-control">
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="form-group">
+                        <div class="d-flex justify-content-between">
+                            <label for="Coarse Aggregate">Coarse Aggregate</label>
+                            <input type="checkbox" checked data-toggle="toggle" data-onstyle="success"
+                                data-offstyle="danger" data-size="sm" data-on="Optimised" data-off="Not Optimised">
+                        </div>
+                        <input type="number" name="Coarse Aggregate" id="Coarse Aggregate" class="form-control">
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col">
+                    <div class="form-group">
+                        <div class="d-flex justify-content-between">
+                            <label for="Fine Aggregate">Fine Aggregate</label>
+                            <input type="checkbox" checked data-toggle="toggle" data-onstyle="success"
+                                data-offstyle="danger" data-size="sm" data-on="Optimised" data-off="Not Optimised">
+                        </div>
+                        <input type="number" name="Fine Aggregate" id="Fine Aggregate" class="form-control">
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="form-group">
+                        <div class="d-flex justify-content-between">
+                            <label for="Age">Age</label>
+                            <input type="checkbox" checked data-toggle="toggle" data-onstyle="success"
+                                data-offstyle="danger" data-size="sm" data-on="Optimised" data-off="Not Optimised">
+                        </div>
+                        <input type="number" name="Age" id="Age" class="form-control">
+                    </div>
+                </div>
+            </div>
+
+            <div class="text-center">
+                <button type="submit" class="btn btn-outline-primary mb-2">Optimise</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Prescription Output Form -->
+    <div class="container rounded bg-light mt-5">
+        <form>
+            <h4 class="mb-4 text-center"> Result</h4>
+            <!-- <div class="text-center">
+                <output>The concrete strength is : ____ </output>
+            </div> -->
+            <table class="table">
+                <thead>
+                  <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">First</th>
+                    <th scope="col">Last</th>
+                    <th scope="col">Handle</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <th scope="row">1</th>
+                    <td>Mark</td>
+                    <td>Otto</td>
+                    <td>@mdo</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">2</th>
+                    <td>Jacob</td>
+                    <td>Thornton</td>
+                    <td>@fat</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">3</th>
+                    <td>Larry</td>
+                    <td>the Bird</td>
+                    <td>@twitter</td>
+                  </tr>
+                </tbody>
+              </table>
+        </form>
+    </div>
+
+
+    <!-- History Table -->
+    <script src="./script.js"></script>
+</body>
+
+</html>

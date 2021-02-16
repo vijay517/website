@@ -1,0 +1,27 @@
+.navbar-brand{
+    font-family: Courier New;
+    font-size:large;
+    font-weight:bold;
+}
+
+.navbar-nav{
+    font-family:Candara;
+}
+
+.navbar-light .navbar-nav .nav-link:hover{
+    color:royalblue;
+    text-decoration:underline;
+}
+
+h4.mb-4.text-center{
+    font-family:papyrus;
+}
+
+label{
+    font-family:Goudy Old Style;
+}
+
+output{
+    font-family:Goudy Old Style;
+    font-size: larger;
+}
