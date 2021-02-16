@@ -41,44 +41,46 @@
         </div>
     </nav>
 
-    <!-- Type of optimisation Section -->
+   
     <form id="optimisation-form">
-    <div class="container rounded bg-light mt-5">
+         <!-- Type of optimisation Section -->
+        <div class="container rounded bg-light mt-5">
 
-        <div class="row">
-            <div class="col">
-                <h4 class="mb-4 text-center"> Select the type of optimisation</h4>
+            <div class="row">
+                <div class="col">
+                    <h4 class="mb-4 text-center"> Select the type of optimisation</h4>
+                </div>
             </div>
-        </div>
-        <div class="row justify-content-center">
-            <div class="col">
-                <div class="d-flex justify-content-center">
-                    <div class="form-check form-check-inline mr-5">
-                        <input checked class="form-check-input" type="radio" name="optimisationType" id="soo" value="soo">
-                        <label class="form-check-label" for="soo">SOO</label>
-                      </div>
-                      <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="radio" name="optimisationType" id="moo" value="moo">
-                        <label class="form-check-label" for="moo">MOO</label>
-                      </div>
+            <div class="row justify-content-center">
+                <div class="col">
+                    <div class="d-flex justify-content-center">
+                        <div class="form-check form-check-inline mr-5">
+                            <input checked class="form-check-input" type="radio" name="optimisationType" id="soo"
+                                value="soo">
+                            <label class="form-check-label" for="soo">SOO</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="optimisationType" id="moo" value="moo">
+                            <label class="form-check-label" for="moo">MOO</label>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
 
+        <!-- Prescription Input Form -->
+        <div class="container rounded bg-light mt-5">
 
-    <!-- Prescription Input Form -->
-    <div class="container rounded bg-light mt-5">
-
-            <h4 class="mb-4 text-center"> Optimise Parmeters</h4>
+            <h4 class="mb-4 text-center"> Optimise Parameters</h4>
 
             <div class="row">
                 <div class="col">
                     <div class="form-group">
                         <div class="d-flex justify-content-between">
                             <label for="cement-optimised">Cement</label>
-                            <input id="cement-optimised" type="checkbox" checked data-toggle="toggle" data-onstyle="success"
-                                data-offstyle="danger" data-size="sm" data-on="Optimised" data-off="Not Optimised">
+                            <input id="cement-optimised" type="checkbox" checked data-toggle="toggle"
+                                data-onstyle="success" data-offstyle="danger" data-size="sm" data-on="Optimised"
+                                data-off="Not Optimised">
                         </div>
                         <input type="number" name="cement-value" id="Cement" class="form-control">
                     </div>
@@ -167,10 +169,10 @@
             <div class="text-center">
                 <button type="submit" class="btn btn-outline-primary mb-2">Optimise</button>
             </div>
-        </form>
-    </div>
-
-    <!-- Prescription Output Form -->
+        </div>
+    </form>
+    
+    <!-- Result Section Form -->
     <div class="container rounded bg-light mt-5">
         <form>
             <h4 class="mb-4 text-center"> Result</h4>
@@ -179,39 +181,37 @@
             </div> -->
             <table class="table">
                 <thead>
-                  <tr>
-                    <th scope="col">#</th>
-                    <th scope="col">First</th>
-                    <th scope="col">Last</th>
-                    <th scope="col">Handle</th>
-                  </tr>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">First</th>
+                        <th scope="col">Last</th>
+                        <th scope="col">Handle</th>
+                    </tr>
                 </thead>
                 <tbody>
-                  <tr>
-                    <th scope="row">1</th>
-                    <td>Mark</td>
-                    <td>Otto</td>
-                    <td>@mdo</td>
-                  </tr>
-                  <tr>
-                    <th scope="row">2</th>
-                    <td>Jacob</td>
-                    <td>Thornton</td>
-                    <td>@fat</td>
-                  </tr>
-                  <tr>
-                    <th scope="row">3</th>
-                    <td>Larry</td>
-                    <td>the Bird</td>
-                    <td>@twitter</td>
-                  </tr>
+                    <tr>
+                        <th scope="row">1</th>
+                        <td>Mark</td>
+                        <td>Otto</td>
+                        <td>@mdo</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">2</th>
+                        <td>Jacob</td>
+                        <td>Thornton</td>
+                        <td>@fat</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">3</th>
+                        <td>Larry</td>
+                        <td>the Bird</td>
+                        <td>@twitter</td>
+                    </tr>
                 </tbody>
-              </table>
+            </table>
         </form>
     </div>
 
-
-    <!-- History Table -->
     <script src="./script.js"></script>
 </body>
 

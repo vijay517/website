@@ -25,3 +25,7 @@ output{
     font-family:Goudy Old Style;
     font-size: larger;
 }
+
+.d-flex.justify-content-between {
+    margin-bottom: 3px;
+}
