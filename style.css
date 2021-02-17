@@ -18,14 +18,14 @@ h4.mb-4.text-center{
 }
 
 label{
-    font-family:Goudy Old Style;
-}
-
-output{
-    font-family:Goudy Old Style;
-    font-size: larger;
+    font-family:sans-seri;
 }
 
 .d-flex.justify-content-between {
     margin-bottom: 3px;
+}
+
+body{
+    background-image: url('./background.jpg');
+    background-size: cover;
 }
