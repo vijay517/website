@@ -13,12 +13,10 @@
     text-decoration:underline;
 }
 
-h4.mb-4.text-center{
-    font-family:papyrus;
-}
 
 label{
-    font-family:sans-seri;
+    font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol";
+    font-weight:bold;
 }
 
 .d-flex.justify-content-between {
@@ -29,3 +27,29 @@ body{
     background-image: url('./background.jpg');
     background-size: cover;
 }
+
+.card-img-top{
+    width: 15%;
+    height: 25%;
+}
+
+#card-section-1{
+    border-radius: 20px;
+    background-color: aliceblue;
+
+}
+
+#card-section-2{
+    border-radius: 20px;
+    background-color: aliceblue;
+
+}
+
+#input-section{
+    border-radius: 20px;
+    background-color: aliceblue;
+}
+
+::-webkit-scrollbar {
+    display: none;
+    }
