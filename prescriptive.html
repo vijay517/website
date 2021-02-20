@@ -178,70 +178,74 @@
     <!-- Result Section Form -->
     <div class="container rounded mt-5">
         <div id="input-section" class="p-3">
-            <form>
-                <h4 class="mb-4 text-center"> OPTIMISATION RESULTS</h4>
+            <h4 class="mb-4 text-center"> OPTIMISATION RESULTS</h4>
+            <table id="optimisation-results-table" class="table table-hover table-bordered text-center table-responsive-sm">
+                <thead class="thead-dark">
+                    <tr>
+                        <th scope="col">PARAMETER NAME</th>
+                        <th scope="col">OPTIMISATION STATUS</th>
+                        <th scope="col">INPUT VALUE</th>
+                        <th scope="col">PRESCRIBED VALUE</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr data-row="cement" class="table-light">
+                        <th scope="row">Cement</th>
+                        <td data-datatype="optimisationStatus"></td>
+                        <td data-datatype="inputValue"></td>
+                        <td data-datatype="prescribedValue"></td>
+                    </tr>
+                    <tr data-row="blastFurn" class="table-light">
+                        <th scope="row">Blast Furn</th>
+                        <td data-datatype="optimisationStatus"></td>
+                        <td data-datatype="inputValue"></td>
+                        <td data-datatype="prescribedValue"></td>
+                    </tr>
+                    <tr data-row="flyAsh" class="table-light">
+                        <th scope="row">Fly Ash</th>
+                        <td data-datatype="optimisationStatus"></td>
+                        <td data-datatype="inputValue"></td>
+                        <td data-datatype="prescribedValue"></td>
+                    </tr>
+                    <tr data-row="water" class="table-light">
+                        <th scope="row">Water</th>
+                        <td data-datatype="optimisationStatus"></td>
+                        <td data-datatype="inputValue"></td>
+                        <td data-datatype="prescribedValue"></td>
+                    </tr>
+                    <tr data-row="superplasticizer" class="table-light">
+                        <th scope="row">Superplasticizer</th>
+                        <td data-datatype="optimisationStatus"></td>
+                        <td data-datatype="inputValue"></td>
+                        <td data-datatype="prescribedValue"></td>
+                    </tr>
+                    <tr data-row="coarseAggregate" class="table-light">
+                        <th scope="row">Coarse Aggregate</th>
+                        <td data-datatype="optimisationStatus"></td>
+                        <td data-datatype="inputValue"></td>
+                        <td data-datatype="prescribedValue"></td>
+                    </tr>
+                    <tr data-row="fineAggregate" class="table-light">
+                        <th scope="row">Fine Aggregate</th>
+                        <td data-datatype="optimisationStatus"></td>
+                        <td data-datatype="inputValue"></td>
+                        <td data-datatype="prescribedValue"></td>
+                    </tr>
+                    <tr data-row="age" class="table-light">
+                        <th scope="row">Age</th>
+                        <td data-datatype="optimisationStatus"></td>
+                        <td data-datatype="inputValue"></td>
+                        <td data-datatype="prescribedValue"></td>
+                    </tr>
+                </tbody>
+            </table>  
+            <!-- fake button to test populating of table, delete after population function has been tested -->
+            <button onclick="callPopulateTableWithFakeResults()">test populating</button>
+            <!-- fake button to test populating of table, delete after population function has been tested -->
 
-                <table class="table table-hover table-bordered text-center table-responsive-sm">
-                    <thead class="thead-dark">
-                        <tr>
-                            <th scope="col">PARAMETER NAME</th>
-                            <th scope="col">OPTIMISATION STATUS</th>
-                            <th scope="col">INPUT VALUE</th>
-                            <th scope="col">PRESCRIBED VALUE</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr class="table-light">
-                            <th scope="row">Cement</th>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                        </tr>
-                        <tr class="table-light">
-                            <th scope="row">Blast Furn</th>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                        </tr>
-                        <tr class="table-light">
-                            <th scope="row">Fly Ash</th>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                        </tr>
-                        <tr class="table-light">
-                            <th scope="row">Water</th>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                        </tr>
-                        <tr class="table-light">
-                            <th scope="row">Superplasticizer</th>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                        </tr>
-                        <tr class="table-light">
-                            <th scope="row">Coarse Aggregate</th>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                        </tr>
-                        <tr class="table-light">
-                            <th scope="row">Fine Aggregate</th>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                        </tr>
-                        <tr class="table-light">
-                            <th scope="row">Age</th>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                        </tr>
-                    </tbody>
-                </table>
-            </form>
+            <!-- fake button to test clearing of table, delete after clearing function has been tested -->
+            <button onclick="clearOptimisationResults()">test clearing</button>
+            <!-- fake button to test clearing of table, delete after clearing function has been tested -->
         </div>
     </div>
     <br>
