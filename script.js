@@ -1,7 +1,4 @@
-/*
- * Code to make the current nav link active
- */
-
+//Code to make the current nav link active
 function initialiseNavWatcher() {
   const currentPage = window.location.pathname;
   const currentPathName = currentPage.split('/')[1];
