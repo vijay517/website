@@ -124,7 +124,7 @@ const populatePredictiveModelsInCloud = (models) => {
     createdDeployButton.textContent = 'DEPLOY';
     createdDeployButton.classList.add('btn', 'btn-primary');
     createdDeployButton.addEventListener('click', () => {
-      Deploy_Model(model.modelName);
+      Click_Deploy(model.modelName);
     });
 
     createdDeployButtonTableData.appendChild(createdDeployButton);
@@ -294,12 +294,15 @@ var cognitoIdentity = new AWS.CognitoIdentity();
 var webMqttClient;
 var CONNECTION_STATUS = false;
 var PERMISSON_TO_DEPLOY = false;
-var CHECKING_MODEL_STATUS = true;
+var DEPLOY_REQUESTED = false;
+var MODELNAME;
 
 const Recieved_Msg_From_MQTT = (topic, payload) => {
+  //remove later
+  console.log("MQTT topic:", topic);
+  console.log("payload: ", payload.state.desired);
+
   if (topic === '$aws/things/predictiveModel/shadow/get/accepted') {
-    //Update the variable to indicate the checking has been done
-    CHECKING_MODEL_STATUS = false;
 
     //Update the payload status to a boolean value and give permission to deploy when the deployed model is currently active. 
     if (payload.state.desired.Status === 'InService') {
@@ -328,6 +331,12 @@ const Recieved_Msg_From_MQTT = (topic, payload) => {
 
     //Populating the predictive model table
     populatePredictiveModel(Data);
+
+    if(DEPLOY_REQUESTED){
+      Deploy_Model(MODELNAME);
+    }
+
+
   }
 
   else if (topic === '$aws/things/predictiveModel/shadow/update/rejected') {
@@ -349,53 +358,55 @@ const Publish_to_MQTT_Topic = (pubTopic, payload) => {
   if (CONNECTION_STATUS) {
     webMqttClient.publish(pubTopic, JSON.stringify(payload));
   }
-  alert("UNABLE TO PUBLISH TO TOPIC: MQTT CONNECTION NOT ESTABLISHED");
+  else {
+    alert("UNABLE TO PUBLISH TO TOPIC: MQTT CONNECTION NOT ESTABLISHED");
+  }
+
 }
 
 const Check_Model_Status = () => {
   if (CONNECTION_STATUS) {
     PERMISSON_TO_DEPLOY = false;
-    CHECKING_MODEL_STATUS = true;
+    //remove later
+    console.log("CHECKING MODEL STATUS");
     Publish_to_MQTT_Topic('webuser/service/input', { "service_no": 1, "service_name": "Deploy model", "service_input_payload": null });
   }
 
 }
 
-function Deploy_Model (modelName){
+function Click_Deploy(modelName){
+  DEPLOY_REQUESTED = true;
+  MODELNAME = modelName;
+  Check_Model_Status();
+}
+
+function Deploy_Model(modelName) {
   if (CONNECTION_STATUS) {
-    Check_Model_Status();
-    var startTime = Date.now();
-    //While loop will run for atmost 30 seconds 
-    while (Date.now() - startTime < 6000) {
-      // Keep checking the CHECKING_MODEL_STATUS for 30 seconds
-      if (CHECKING_MODEL_STATUS === false) {
-        //Check for the permisson to deploy
-        if (PERMISSON_TO_DEPLOY) {
-          //Prepare the payload to deploy the model using ec2 instance
-          payload = { model_data: modelPaths[modelName] }
-          //Send a MQTT message to the shadow to update the model name and accuracy in the shadow 
-          Publish_to_MQTT_Topic('$aws/things/predictiveModel/shadow/update', { "state": { "desired": { "Name": modelName, "Accuracy": 70, "Status": "Nil" } } });
-          //--- Send a MQTT message to the ec2 instance to deploy the model ----
-          if (document.getElementsByTagName('td')[0].innerText.toUpperCase() === 'NIL') {
-            //No model is present. Thus we will creating a new model endpoint
-            Publish_to_MQTT_Topic('webuser/service/input', { "service_no": 2, "service_name": "Deploy model", "service_input_payload": null });
-          }
-          else {
-            //A model is already active. Thus we will be updating the model endpoint
-            Publish_to_MQTT_Topic('webuser/service/input', { "service_no": 3, "service_name": "Deploy model", "service_input_payload": null });
-          }
-          break;
-        }
-        else {
-          alert("No permission to deploy the model");
-          break;
-        }
+    if (PERMISSON_TO_DEPLOY) {
+      //remove later
+      console.log("PERMISSION GIVEN TO DEPLOY");
+      //Prepare the payload to deploy the model using ec2 instance
+      payload = { model_data: modelPaths[modelName] }
+      //Send a MQTT message to the shadow to update the model name and accuracy in the shadow 
+      Publish_to_MQTT_Topic('$aws/things/predictiveModel/shadow/update', { "state": { "desired": { "Name": modelName, "Accuracy": 70, "Status": "Nil" } } });
+      //--- Send a MQTT message to the ec2 instance to deploy the model ----
+      if (document.getElementsByTagName('td')[0].innerText.toUpperCase() === 'NIL') {
+        //No model is present. Thus we will creating a new model endpoint
+        Publish_to_MQTT_Topic('webuser/service/input', { "service_no": 2, "service_name": "Deploy model", "service_input_payload": null });
       }
+      else {
+        //A model is already active. Thus we will be updating the model endpoint
+        Publish_to_MQTT_Topic('webuser/service/input', { "service_no": 3, "service_name": "Deploy model", "service_input_payload": null });
+      }
+    }
+    else {
+      alert("No permission to deploy the model");
     }
   }
   else {
     console.log('MQTT CONNECTION IS NOT AVAILABLE')
   }
+  DEPLOY_REQUESTED = false;
 }
 
 const InitialiseMQTTClient = () => {
@@ -407,7 +418,7 @@ const InitialiseMQTTClient = () => {
       };
       cognitoIdentity.getCredentialsForIdentity(params, function (err, data) {
         if (!err) {
-          webMqttClient = awsIot.thingShadow({
+          webMqttClient = awsIot.device({
             //Set region
             region: CognitioCredentials.region,
 
