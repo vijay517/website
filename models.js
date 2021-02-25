@@ -124,7 +124,7 @@ const populatePredictiveModelsInCloud = (models) => {
     createdDeployButton.textContent = 'DEPLOY';
     createdDeployButton.classList.add('btn', 'btn-primary');
     createdDeployButton.addEventListener('click', () => {
-      console.log('deploy model with the name: ', model.modelName);
+      Deploy_Model(model.modelName);
     });
 
     createdDeployButtonTableData.appendChild(createdDeployButton);
@@ -156,11 +156,17 @@ const testPopulatePredictiveModels = () =>
 /************************************************************
  * 
  * 
- * CODE FOR AWS
+ * ********** CODE FOR AWS **********************************
  * 
- * 
- * 
+ *
  * **********************************************************
+ */
+
+
+/**
+ * 
+ * CODE TO ESTABLISH A MQTT CONNECTION WITH AWS IOT CORE
+ * 
  */
 
 
@@ -202,7 +208,7 @@ var s3 = new AWS.S3();
 //AWS CognitioCredentials
 var CognitioCredentials = {
   poolId: 'us-east-2:df51fc61-e512-4543-b81d-d1af4db80644',
-  endpoint: 'xendpointx',
+  endpoint: 'abno170pso3ez-ats.iot.us-east-2.amazonaws.com',
   region: 'us-east-2'
 };
 
@@ -241,7 +247,7 @@ const GetModelInfo = (modelInfoPath, modelPath) => {
     if (err) console.log(err, err.stack); // an error occurred
     else {
       PredictiveModels.push({ modelName: new TextDecoder("utf-8").decode(data.Body), accuracy: null, path: "s3://" + S3Bucket.bucketName + "/" + modelPath });
-      modelPaths[new TextDecoder("utf-8").decode(data.Body)] = "s3://" + S3Bucket.bucketName + "/" + modelPath;
+      modelPaths[new TextDecoder("utf-8").decode(data.Body)] = "s3://" + S3Bucket.bucketName + "/" + modelPath + "output/model.tar.gz";
       if (PredictiveModels.length === NUMBER_OF_MODULES) populatePredictiveModelsInCloud(PredictiveModels)
     }
   });
@@ -256,7 +262,7 @@ const GetModelPath = () => {
   s3.listObjects(params, function (err, data) {
     if (err) console.log(err, err.stack); // an error occurred
     else {
-      NUMBER_OF_MODULES =  data.CommonPrefixes.length;
+      NUMBER_OF_MODULES = data.CommonPrefixes.length;
       data.CommonPrefixes.forEach(function (item, index) {
         //model directory
         params.Prefix = item.Prefix;
@@ -275,3 +281,194 @@ const GetModelPath = () => {
 }
 
 GetModelPath()
+
+
+/**
+ * 
+ * CODE TO ESTABLISH A MQTT CONNECTION WITH AWS IOT CORE
+ * 
+ */
+
+var awsIot = require('aws-iot-device-sdk');
+var cognitoIdentity = new AWS.CognitoIdentity();
+var webMqttClient;
+var CONNECTION_STATUS = false;
+var PERMISSON_TO_DEPLOY = false;
+var CHECKING_MODEL_STATUS = true;
+
+const Recieved_Msg_From_MQTT = (topic, payload) => {
+  if (topic === '$aws/things/predictiveModel/shadow/get/accepted') {
+    //Update the variable to indicate the checking has been done
+    CHECKING_MODEL_STATUS = false;
+
+    //Update the payload status to a boolean value and give permission to deploy when the deployed model is currently active. 
+    if (payload.state.desired.Status === 'InService') {
+      payload.state.desired.Status = true;
+      PERMISSON_TO_DEPLOY = true;
+    }
+
+    //Update the payload status to a boolean value and give permission to deploy when there is no deployed model 
+    else if (payload.state.desired.Status === 'Nil') {
+      PERMISSON_TO_DEPLOY = true;
+      payload.state.desired.Status = false;
+    }
+
+    //If the payload status is other than 'InService' or 'Nil' the permission is not given to deploy the new model
+    else {
+      PERMISSON_TO_DEPLOY = true;
+      payload.state.desired.Status = false;
+    }
+
+    //Creating a temp object to populate the Predictive model table
+    const Data = {
+      modelName: payload.state.desired.Name,
+      modelAccuracy: payload.state.desired.Accuracy,
+      isDeploymentActive: payload.state.desired.Status,
+    };
+
+    //Populating the predictive model table
+    populatePredictiveModel(Data);
+  }
+
+  else if (topic === '$aws/things/predictiveModel/shadow/update/rejected') {
+    alert("Unable to update the model status");
+  }
+
+  else {
+    // 
+  }
+}
+
+const Subscribe_to_MQTT_Topic = (subTopic) => {
+  if (CONNECTION_STATUS) {
+    webMqttClient.subscribe(subTopic);
+  }
+}
+
+const Publish_to_MQTT_Topic = (pubTopic, payload) => {
+  if (CONNECTION_STATUS) {
+    webMqttClient.publish(pubTopic, JSON.stringify(payload));
+  }
+  alert("UNABLE TO PUBLISH TO TOPIC: MQTT CONNECTION NOT ESTABLISHED");
+}
+
+const Check_Model_Status = () => {
+  if (CONNECTION_STATUS) {
+    PERMISSON_TO_DEPLOY = false;
+    CHECKING_MODEL_STATUS = true;
+    Publish_to_MQTT_Topic('webuser/service/input', { "service_no": 1, "service_name": "Deploy model", "service_input_payload": null });
+  }
+
+}
+
+function Deploy_Model (modelName){
+  if (CONNECTION_STATUS) {
+    Check_Model_Status();
+    var startTime = Date.now();
+    //While loop will run for atmost 30 seconds 
+    while (Date.now() - startTime < 6000) {
+      // Keep checking the CHECKING_MODEL_STATUS for 30 seconds
+      if (CHECKING_MODEL_STATUS === false) {
+        //Check for the permisson to deploy
+        if (PERMISSON_TO_DEPLOY) {
+          //Prepare the payload to deploy the model using ec2 instance
+          payload = { model_data: modelPaths[modelName] }
+          //Send a MQTT message to the shadow to update the model name and accuracy in the shadow 
+          Publish_to_MQTT_Topic('$aws/things/predictiveModel/shadow/update', { "state": { "desired": { "Name": modelName, "Accuracy": 70, "Status": "Nil" } } });
+          //--- Send a MQTT message to the ec2 instance to deploy the model ----
+          if (document.getElementsByTagName('td')[0].innerText.toUpperCase() === 'NIL') {
+            //No model is present. Thus we will creating a new model endpoint
+            Publish_to_MQTT_Topic('webuser/service/input', { "service_no": 2, "service_name": "Deploy model", "service_input_payload": null });
+          }
+          else {
+            //A model is already active. Thus we will be updating the model endpoint
+            Publish_to_MQTT_Topic('webuser/service/input', { "service_no": 3, "service_name": "Deploy model", "service_input_payload": null });
+          }
+          break;
+        }
+        else {
+          alert("No permission to deploy the model");
+          break;
+        }
+      }
+    }
+  }
+  else {
+    console.log('MQTT CONNECTION IS NOT AVAILABLE')
+  }
+}
+
+const InitialiseMQTTClient = () => {
+  AWS.config.credentials.get(function (err, data) {
+    if (!err) {
+      console.log('retrieved identity from Cognito: ' + AWS.config.credentials.identityId);
+      var params = {
+        IdentityId: AWS.config.credentials.identityId
+      };
+      cognitoIdentity.getCredentialsForIdentity(params, function (err, data) {
+        if (!err) {
+          webMqttClient = awsIot.thingShadow({
+            //Set region
+            region: CognitioCredentials.region,
+
+            //Set endpoint
+            host: CognitioCredentials.endpoint,
+
+            // Use a random client ID.
+            clientId: "webClient" + '-' + (Math.floor((Math.random() * 100000) + 1)),
+
+            // Connect via secure WebSocket
+            protocol: 'wss',
+
+            // Set Access Key, Secret Key and session token based on credentials from Cognito
+            accessKeyId: data.Credentials.AccessKeyId,
+            secretKey: data.Credentials.SecretKey,
+            sessionToken: data.Credentials.SessionToken
+          });
+
+          webMqttClient.on('error', function (err) {
+            console.log("Error is ", err);
+          });
+
+          webMqttClient.on('connect', function () {
+            console.log('connected');
+            CONNECTION_STATUS = true;
+            Subscribe_to_MQTT_Topic('$aws/things/predictiveModel/shadow/get/accepted');
+            Subscribe_to_MQTT_Topic('$aws/things/predictiveModel/shadow/update/rejected');
+            Check_Model_Status();
+          });
+
+          webMqttClient.on('message', function (topic, payload) {
+            Recieved_Msg_From_MQTT(topic, JSON.parse(payload.toString()));
+          });
+
+          webMqttClient.on('disconnect', function () {
+            console.log('disconnected');
+            CONNECTION_STATUS = false;
+            alert("ERROR: MQTT CONNECTION LOST");
+          });
+
+        }
+      })
+    }
+  });
+}
+
+InitialiseMQTTClient();
+
+
+/*
+
+$aws/things/predictiveModel/shadow/update
+$aws/things/predictiveModel/shadow/get/accepted
+{
+  "state": {
+    "desired": {
+      "Name": "test_model",
+      "Accuracy": "on",
+      "Status": "InService"
+    }
+  }
+}
+
+*/

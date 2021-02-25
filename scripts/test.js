@@ -1,12 +1,11 @@
 var AWS = require('aws-sdk');
-const { S3Client, } = require("aws-sdk/clients/s3");
 
 /* Globabl variables */
 
 //AWS CognitioCredentials
 var CognitioCredentials = {
     poolId: 'us-east-2:df51fc61-e512-4543-b81d-d1af4db80644',
-    endpoint: 'xendpointx',
+    endpoint: 'abno170pso3ez.iot.us-east-2.amazonaws.com',
     region: 'us-east-2'
 };
 
@@ -76,6 +75,68 @@ const GetModelPath = () => {
 
 //GetModelPath()
 
-const sageMaker = require('aws-sdk/clients/sagemaker')
+var awsIot = require('aws-iot-device-sdk');
+var cognitoIdentity = new AWS.CognitoIdentity();
+var webMqttClient;
+var CONNECTION_STATUS = false;
 
-var s = new sageMaker()
+
+
+const InitialiseMQTTClient = () => {
+    AWS.config.credentials.get(function (err, data) {
+        if (!err) {
+            console.log('retrieved identity from Cognito: ' + AWS.config.credentials.identityId);
+            var params = {
+                IdentityId: AWS.config.credentials.identityId
+            };
+            cognitoIdentity.getCredentialsForIdentity(params, function (err, data) {
+                if (!err) {
+                    var webMqttClient = awsIot.device({
+                        //Set region
+                        region: CognitioCredentials.region,
+                        
+                        //Set endpoint
+                        host: CognitioCredentials.endpoint,
+    
+                        // Connect via secure WebSocket
+                        protocol: 'wss',
+    
+                        // Set Access Key, Secret Key and session token based on credentials from Cognito
+                        accessKeyId: data.Credentials.AccessKeyId,
+                        secretKey: data.Credentials.SecretKey,
+                        sessionToken: data.Credentials.SessionToken
+    
+                    });
+                    
+                    webMqttClient.on('connect', function () {
+                        console.log('connected');
+                        CONNECTION_STATUS = true;
+                    });
+    
+                    webMqttClient.on('disconnect', function () {
+                        console.log('connected');
+                        CONNECTION_STATUS = false;
+                    });
+    
+                    webMqttClient.on('error', function (err) {
+                        console.log(err);
+                    });
+                }
+            })
+        }
+    });
+}
+
+const Publish_to_MQTT_Topic = (pubTopic,payload) =>{
+    if(CONNECTION_STATUS){
+        webMqttClient.publish(pubTopic,JSON.stringify(payload));
+    }
+}
+
+const Subscribe_to_MQTT_Topic = (subTopic) =>{
+    if(CONNECTION_STATUS){
+        webMqttClient.subscribe(subTopic);
+    }
+}
+
+
