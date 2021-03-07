@@ -1,4 +1,3 @@
-
 function initialiseNavWatcher() {
   const currentPage = window.location.pathname;
   const currentPathName = currentPage.split('/')[1];
@@ -20,11 +19,39 @@ function initialiseNavWatcher() {
 
 initialiseNavWatcher();
 
+// Creating -> blue
+// Updating -> blue
+// Deleting -> red
+// Failed -> red
+// Inservice -> green
+
 //Write a function that takes in a json object to fill in the deployed predictive model section
 const populatePredictiveModel = (data) => {
   const tableBodyRowElements = document.querySelectorAll(
     '#deployed-predictive-model-table tbody tr'
   );
+
+  const colorByDeploymentStatus = {
+    creating: 'blue',
+    updating: 'blue',
+    deleting: 'red',
+    failed: 'red',
+    inService: 'green',
+  };
+
+  const labelByDeploymentStatus = {
+    creating: 'Creating',
+    updating: 'Updating',
+    deleting: 'Deleting',
+    failed: 'Failed',
+    inService: 'In Service',
+  };
+
+  const btnClassByColor = {
+    red: 'btn-danger',
+    blue: 'btn-primary',
+    green: 'btn-success',
+  };
 
   console.log('tableBodyRowElements: ', tableBodyRowElements);
 
@@ -36,20 +63,61 @@ const populatePredictiveModel = (data) => {
     rowDataElements.forEach((dataElement) => {
       if (rowParameter === 'deploymentStatus') {
         const foundButtonElement = dataElement.querySelector('button');
+        const foundSpinnerElement = dataElement.querySelector(
+          '.loading-spinner'
+        );
 
-        if (data.isDeploymentActive) {
-          foundButtonElement.classList.remove('btn-danger');
-          foundButtonElement.classList.add('btn-success');
-          foundButtonElement.textContent = 'ACTIVE';
-          foundButtonElement.dataset.isdeploymentactive = true;
+        if (!data || !data[rowParameter]) {
+          foundButtonElement.classList.remove(
+            'btn-danger',
+            'btn-success',
+            'btn-primary'
+          );
+
+          foundButtonElement.textContent = '-';
+          if (foundSpinnerElement) {
+            foundSpinnerElement.remove();
+          }
+
+          return;
+        }
+
+        const color = colorByDeploymentStatus[data.deploymentStatus];
+        const btnClass = btnClassByColor[color];
+        const label = labelByDeploymentStatus[data.deploymentStatus];
+
+        foundButtonElement.classList.remove(
+          'btn-danger',
+          'btn-success',
+          'btn-primary'
+        );
+        foundButtonElement.classList.add(btnClass);
+        foundButtonElement.textContent = label;
+
+        if (
+          data.deploymentStatus === 'updating' ||
+          data.deploymentStatus === 'creating' ||
+          data.deploymentStatus === 'deleting'
+        ) {
+          if (!foundSpinnerElement) {
+            const spinnerElement = document.createElement('div');
+            spinnerElement.classList.add('loading-spinner');
+            foundButtonElement.insertAdjacentElement(
+              'afterend',
+              spinnerElement
+            );
+          }
         } else {
-          foundButtonElement.classList.remove('btn-success');
-          foundButtonElement.classList.add('btn-danger');
-          foundButtonElement.textContent = 'NOT ACTIVE';
-          foundButtonElement.dataset.isdeploymentactive = false;
+          if (foundSpinnerElement) {
+            foundSpinnerElement.remove();
+          }
         }
       } else {
-        dataElement.textContent = data[rowParameter];
+        if (!data[rowParameter]) {
+          dataElement.textContent = '-';
+        } else {
+          dataElement.textContent = data[rowParameter];
+        }
       }
     });
   });
@@ -58,11 +126,32 @@ const populatePredictiveModel = (data) => {
 const fakeData = {
   modelName: 'someModelName',
   modelAccuracy: 80,
-  isDeploymentActive: true,
+  deploymentStatus: 'updating',
 };
+
+const fakeData2 = {
+  modelName: 'someModelName',
+  modelAccuracy: 80,
+  deploymentStatus: 'deleting',
+};
+const fakeData3 = {
+  modelName: 'someModelName',
+  modelAccuracy: 80,
+  deploymentStatus: 'inService',
+};
+const fakeData4 = {};
 
 const testPopulatePredictiveModel = () => {
   populatePredictiveModel(fakeData);
+};
+const testPopulatePredictiveModel2 = () => {
+  populatePredictiveModel(fakeData2);
+};
+const testPopulatePredictiveModel3 = () => {
+  populatePredictiveModel(fakeData3);
+};
+const testPopulatePredictiveModel4 = () => {
+  populatePredictiveModel(fakeData4);
 };
 
 //Write a function that toggles between the deployement status
@@ -152,21 +241,19 @@ const fakePredictiveModels = [
 const testPopulatePredictiveModels = () =>
   populatePredictiveModelsInCloud(fakePredictiveModels);
 
-
 /************************************************************
- * 
- * 
+ *
+ *
  * ********** CODE FOR AWS **********************************
- * 
+ *
  *
  * **********************************************************
  */
 
-
 /**
- * 
+ *
  * CODE TO ESTABLISH A MQTT CONNECTION WITH AWS IOT CORE
- * 
+ *
  */
 
 /* Globabl variables */
@@ -175,22 +262,22 @@ const testPopulatePredictiveModels = () =>
 var CognitioCredentials = {
   poolId: '',
   endpoint: '',
-  region: ''
+  region: '',
 };
 
 //S3 Bucket Configurations
 var S3Bucket = {
-  bucketName: "",
-}
+  bucketName: '',
+};
 
 //Array that holds info about all the models in the cloud
-var PredictiveModels = []
+var PredictiveModels = [];
 
 //Json object that holds the model name as its key and the model path as its value
-var modelPaths = {}
+var modelPaths = {};
 
 //Number of modules
-var NUMBER_OF_MODULES = 0
+var NUMBER_OF_MODULES = 0;
 
 /* Methods */
 
@@ -198,8 +285,8 @@ var NUMBER_OF_MODULES = 0
 AWS.config.update({
   region: CognitioCredentials.region,
   credentials: new AWS.CognitoIdentityCredentials({
-    IdentityPoolId: CognitioCredentials.poolId
-  })
+    IdentityPoolId: CognitioCredentials.poolId,
+  }),
 });
 
 //Initialise S3 client
@@ -210,23 +297,34 @@ const GetModelInfo = (modelInfoPath, modelPath) => {
   var params = { Bucket: S3Bucket.bucketName, Key: modelInfoPath };
   //Read the modelName and Accuracy from the .txt file
   s3.getObject(params, function (err, data) {
-    if (err) console.log(err, err.stack); // an error occurred
+    if (err) console.log(err, err.stack);
+    // an error occurred
     else {
-      PredictiveModels.push({ modelName: new TextDecoder("utf-8").decode(data.Body), accuracy: null, path: "s3://" + S3Bucket.bucketName + "/" + modelPath });
-      modelPaths[new TextDecoder("utf-8").decode(data.Body)] = "s3://" + S3Bucket.bucketName + "/" + modelPath + "output/model.tar.gz";
-      if (PredictiveModels.length === NUMBER_OF_MODULES) populatePredictiveModelsInCloud(PredictiveModels)
+      PredictiveModels.push({
+        modelName: new TextDecoder('utf-8').decode(data.Body),
+        accuracy: null,
+        path: 's3://' + S3Bucket.bucketName + '/' + modelPath,
+      });
+      modelPaths[new TextDecoder('utf-8').decode(data.Body)] =
+        's3://' + S3Bucket.bucketName + '/' + modelPath + 'output/model.tar.gz';
+      if (PredictiveModels.length === NUMBER_OF_MODULES)
+        populatePredictiveModelsInCloud(PredictiveModels);
     }
   });
-}
+};
 
 const GetModelPath = () => {
-
   //Initalise parameters to retrieve models path from the s3 bucket
-  var params = { Bucket: S3Bucket.bucketName, Delimiter: '/', Prefix: 'models/' };
+  var params = {
+    Bucket: S3Bucket.bucketName,
+    Delimiter: '/',
+    Prefix: 'models/',
+  };
 
   //Find path to the different model available in the S3 bucket
   s3.listObjects(params, function (err, data) {
-    if (err) console.log(err, err.stack); // an error occurred
+    if (err) console.log(err, err.stack);
+    // an error occurred
     else {
       NUMBER_OF_MODULES = data.CommonPrefixes.length;
       data.CommonPrefixes.forEach(function (item, index) {
@@ -234,25 +332,26 @@ const GetModelPath = () => {
         params.Prefix = item.Prefix;
 
         s3.listObjects(params, function (err, data) {
-          if (err) console.log(err, err.stack); // an error occurred
+          if (err) console.log(err, err.stack);
+          // an error occurred
           else {
-            GetModelInfo(item.Prefix + "model_info.txt", data.CommonPrefixes[0].Prefix);
+            GetModelInfo(
+              item.Prefix + 'model_info.txt',
+              data.CommonPrefixes[0].Prefix
+            );
           }
-        })
-
-      })
+        });
+      });
     }
-
   });
-}
+};
 
 //GetModelPath()
 
-
 /**
- * 
+ *
  * CODE TO ESTABLISH A MQTT CONNECTION WITH AWS IOT CORE
- * 
+ *
  */
 
 var awsIot = require('aws-iot-device-sdk');
@@ -265,18 +364,17 @@ var MODELNAME;
 
 const Recieved_Msg_From_MQTT = (topic, payload) => {
   //remove later
-  console.log("MQTT topic:", topic);
-  console.log("payload: ", payload.state.desired);
+  console.log('MQTT topic:', topic);
+  console.log('payload: ', payload.state.desired);
 
   if (topic === '$aws/things/predictiveModel/shadow/get/accepted') {
-
-    //Update the payload status to a boolean value and give permission to deploy when the deployed model is currently active. 
+    //Update the payload status to a boolean value and give permission to deploy when the deployed model is currently active.
     if (payload.state.desired.Status === 'InService') {
       payload.state.desired.Status = true;
       PERMISSON_TO_DEPLOY = true;
     }
 
-    //Update the payload status to a boolean value and give permission to deploy when there is no deployed model 
+    //Update the payload status to a boolean value and give permission to deploy when there is no deployed model
     else if (payload.state.desired.Status === 'Nil') {
       PERMISSON_TO_DEPLOY = true;
       payload.state.desired.Status = false;
@@ -298,49 +396,44 @@ const Recieved_Msg_From_MQTT = (topic, payload) => {
     //Populating the predictive model table
     populatePredictiveModel(Data);
 
-    if(DEPLOY_REQUESTED){
+    if (DEPLOY_REQUESTED) {
       Deploy_Model(MODELNAME);
     }
-
-
+  } else if (topic === '$aws/things/predictiveModel/shadow/update/rejected') {
+    alert('Unable to update the model status');
+  } else {
+    //
   }
-
-  else if (topic === '$aws/things/predictiveModel/shadow/update/rejected') {
-    alert("Unable to update the model status");
-  }
-
-  else {
-    // 
-  }
-}
+};
 
 const Subscribe_to_MQTT_Topic = (subTopic) => {
   if (CONNECTION_STATUS) {
     webMqttClient.subscribe(subTopic);
   }
-}
+};
 
 const Publish_to_MQTT_Topic = (pubTopic, payload) => {
   if (CONNECTION_STATUS) {
     webMqttClient.publish(pubTopic, JSON.stringify(payload));
+  } else {
+    alert('UNABLE TO PUBLISH TO TOPIC: MQTT CONNECTION NOT ESTABLISHED');
   }
-  else {
-    alert("UNABLE TO PUBLISH TO TOPIC: MQTT CONNECTION NOT ESTABLISHED");
-  }
-
-}
+};
 
 const Check_Model_Status = () => {
   if (CONNECTION_STATUS) {
     PERMISSON_TO_DEPLOY = false;
     //remove later
-    console.log("CHECKING MODEL STATUS");
-    Publish_to_MQTT_Topic('webuser/service/input', { "service_no": 1, "service_name": "Deploy model", "service_input_payload": null });
+    console.log('CHECKING MODEL STATUS');
+    Publish_to_MQTT_Topic('webuser/service/input', {
+      service_no: 1,
+      service_name: 'Deploy model',
+      service_input_payload: null,
+    });
   }
+};
 
-}
-
-function Click_Deploy(modelName){
+function Click_Deploy(modelName) {
   DEPLOY_REQUESTED = true;
   MODELNAME = modelName;
   Check_Model_Status();
@@ -350,27 +443,36 @@ function Deploy_Model(modelName) {
   if (CONNECTION_STATUS) {
     if (PERMISSON_TO_DEPLOY) {
       //remove later
-      console.log("PERMISSION GIVEN TO DEPLOY");
+      console.log('PERMISSION GIVEN TO DEPLOY');
       //Prepare the payload to deploy the model using ec2 instance
-      payload = { model_data: modelPaths[modelName] }
-      //Send a MQTT message to the shadow to update the model name and accuracy in the shadow 
-      Publish_to_MQTT_Topic('$aws/things/predictiveModel/shadow/update', { "state": { "desired": { "Name": modelName, "Accuracy": 70, "Status": "Nil" } } });
+      payload = { model_data: modelPaths[modelName] };
+      //Send a MQTT message to the shadow to update the model name and accuracy in the shadow
+      Publish_to_MQTT_Topic('$aws/things/predictiveModel/shadow/update', {
+        state: { desired: { Name: modelName, Accuracy: 70, Status: 'Nil' } },
+      });
       //--- Send a MQTT message to the ec2 instance to deploy the model ----
-      if (document.getElementsByTagName('td')[0].innerText.toUpperCase() === 'NIL') {
+      if (
+        document.getElementsByTagName('td')[0].innerText.toUpperCase() === 'NIL'
+      ) {
         //No model is present. Thus we will creating a new model endpoint
-        Publish_to_MQTT_Topic('webuser/service/input', { "service_no": 2, "service_name": "Deploy model", "service_input_payload": payload });
-      }
-      else {
+        Publish_to_MQTT_Topic('webuser/service/input', {
+          service_no: 2,
+          service_name: 'Deploy model',
+          service_input_payload: payload,
+        });
+      } else {
         //A model is already active. Thus we will be updating the model endpoint
-        Publish_to_MQTT_Topic('webuser/service/input', { "service_no": 3, "service_name": "Deploy model", "service_input_payload": payload });
+        Publish_to_MQTT_Topic('webuser/service/input', {
+          service_no: 3,
+          service_name: 'Deploy model',
+          service_input_payload: payload,
+        });
       }
+    } else {
+      alert('No permission to deploy the model');
     }
-    else {
-      alert("No permission to deploy the model");
-    }
-  }
-  else {
-    console.log('MQTT CONNECTION IS NOT AVAILABLE')
+  } else {
+    console.log('MQTT CONNECTION IS NOT AVAILABLE');
   }
   DEPLOY_REQUESTED = false;
 }
@@ -378,9 +480,11 @@ function Deploy_Model(modelName) {
 const InitialiseMQTTClient = () => {
   AWS.config.credentials.get(function (err, data) {
     if (!err) {
-      console.log('retrieved identity from Cognito: ' + AWS.config.credentials.identityId);
+      console.log(
+        'retrieved identity from Cognito: ' + AWS.config.credentials.identityId
+      );
       var params = {
-        IdentityId: AWS.config.credentials.identityId
+        IdentityId: AWS.config.credentials.identityId,
       };
       cognitoIdentity.getCredentialsForIdentity(params, function (err, data) {
         if (!err) {
@@ -392,7 +496,8 @@ const InitialiseMQTTClient = () => {
             host: CognitioCredentials.endpoint,
 
             // Use a random client ID.
-            clientId: "webClient" + '-' + (Math.floor((Math.random() * 100000) + 1)),
+            clientId:
+              'webClient' + '-' + Math.floor(Math.random() * 100000 + 1),
 
             // Connect via secure WebSocket
             protocol: 'wss',
@@ -400,18 +505,22 @@ const InitialiseMQTTClient = () => {
             // Set Access Key, Secret Key and session token based on credentials from Cognito
             accessKeyId: data.Credentials.AccessKeyId,
             secretKey: data.Credentials.SecretKey,
-            sessionToken: data.Credentials.SessionToken
+            sessionToken: data.Credentials.SessionToken,
           });
 
           webMqttClient.on('error', function (err) {
-            console.log("Error is ", err);
+            console.log('Error is ', err);
           });
 
           webMqttClient.on('connect', function () {
             console.log('connected');
             CONNECTION_STATUS = true;
-            Subscribe_to_MQTT_Topic('$aws/things/predictiveModel/shadow/get/accepted');
-            Subscribe_to_MQTT_Topic('$aws/things/predictiveModel/shadow/update/rejected');
+            Subscribe_to_MQTT_Topic(
+              '$aws/things/predictiveModel/shadow/get/accepted'
+            );
+            Subscribe_to_MQTT_Topic(
+              '$aws/things/predictiveModel/shadow/update/rejected'
+            );
             Check_Model_Status();
           });
 
@@ -422,14 +531,12 @@ const InitialiseMQTTClient = () => {
           webMqttClient.on('disconnect', function () {
             console.log('disconnected');
             CONNECTION_STATUS = false;
-            alert("ERROR: MQTT CONNECTION LOST");
+            alert('ERROR: MQTT CONNECTION LOST');
           });
-
         }
-      })
+      });
     }
   });
-}
+};
 
 //InitialiseMQTTClient();
-

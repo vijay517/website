@@ -62,12 +62,18 @@
                         </tr>
                         <tr data-row="deploymentStatus">
                             <th scope="row">DEPLOYMENT STATUS</th>
-                            <td><button id="deployment-status" action type="button" class="btn btn-danger" data-isdeploymentactive="false">NOT ACTIVE</button></td>
+                            <td>
+                                <div style="display: flex; align-items: center;">
+                                    <button id="deployment-status" action type="button" class="btn mr-3">-</button>
+                                </div>
+                            </td>
                         </tr>
                 </table>
             <!-- fake button to test popoulating of predicitveModel, delete after toggling function has been tested -->
-            <!-- button onclick="testPopulatePredictiveModel()">test populating-->
-            <!-- fake button to test popoulating of predicitveModel, delete after toggling function has been tested -->
+            <button onclick="testPopulatePredictiveModel()">test updating status</button>
+            <button onclick="testPopulatePredictiveModel2()">test deleting status</button>
+            <button onclick="testPopulatePredictiveModel3()">test inService status</button>
+            <button onclick="testPopulatePredictiveModel4()">test noData status</button>
             
             <!-- fake button to test toggling of deployment status, delete after toggling function has been tested -->
             <!-- button onclick="togglPredictiveModelDeploymentStatus()">test toggling status -->
