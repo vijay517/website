@@ -68,127 +68,146 @@ formElement.addEventListener('submit', optimise);
 //Write a function that takes in a json object and fills in the optimisation results table
 
 const populateOptimisationResultsTable = (results) => {
-  const tableBodyRowElements = document.querySelectorAll(
-    '#optimisation-results-table tbody tr'
+
+  if(!results) return
+
+  clearOptimisationResults()
+
+  const tableBodyElement = document.querySelector(
+    '#optimisation-results-table tbody'
   );
+  
 
-  tableBodyRowElements.forEach((rowElement) => {
-    const rowParameter = rowElement.dataset.row;
-    const rowDataElements = rowElement.querySelectorAll('td');
+  results.forEach((result) => {
+    const createdTableRowElement = document.createElement('tr');
+    createdTableRowElement.classList.add('table-light');
 
-    rowDataElements.forEach((dataElement) => {
-      const dataType = dataElement.dataset.datatype;
-      dataElement.textContent = results[rowParameter][dataType];
+    Object.entries(result).forEach(([key, value]) => {
+      const createdTableDataElement = document.createElement('td');
+      createdTableDataElement.dataset.datatype = key;
+      createdTableDataElement.textContent = value;
+
+      createdTableRowElement.appendChild(createdTableDataElement);
     });
+
+    tableBodyElement.appendChild(createdTableRowElement);
   });
 };
 
-const fakeResults = {
-  cement: {
-    blastFurn: 'some value cement-blashfurn',
-    flyAsh: 'some value cement-flyash',
-    water: 'some value cement-water',
-    superplasticizer: 'some value cement-superplastic',
-    coarseAggregate: 'some value cement-coarseAggregate',
-    fineAggregate: 'some value cement-fineAggregate',
-    age: 'some value cement-age',
-    ucs: 'some value cement-ucs',
-    optimisedUcs: 'some value cement-optimisedUCS',
-    cost: 'some value cement-cost',
-    optimisedCost: 'some value cement-optimisedCost',
+const fakeResults = [
+  {
+    cement: '123',
+    blastFurn: '34254',
+    flyAsh: '098',
+    water: '0980',
+    superplasticizer: '131',
+    coarseAggregate: '098',
+    fineAggregate: '908234',
+    age: '324',
+    ucs: '9038',
+    optimisedUcs: '234',
+    cost: '29034',
+    optimisedCost: '123123',
   },
-  blastFurn: {
-    blastFurn: 'some value',
-    flyAsh: 'some value',
-    water: 'some value',
-    superplasticizer: 'some value',
-    coarseAggregate: 'some value',
-    fineAggregate: 'some value',
-    age: 'some value',
-    ucs: 'some value',
-    optimisedUcs: 'some value',
-    cost: 'some value',
-    optimisedCost: 'some value',
+  {
+    cement: '123',
+    blastFurn: '12319',
+    flyAsh: '0928',
+    water: '234',
+    superplasticizer: '131',
+    coarseAggregate: '342',
+    fineAggregate: '234098',
+    age: '290348',
+    ucs: '324',
+    optimisedUcs: '12312',
+    cost: '123443',
+    optimisedCost: '123123',
   },
-  flyAsh: {
-    blastFurn: 'some value',
-    flyAsh: 'some value',
-    water: 'some value',
-    superplasticizer: 'some value',
-    coarseAggregate: 'some value',
-    fineAggregate: 'some value',
-    age: 'some value',
-    ucs: 'some value',
-    optimisedUcs: 'some value',
-    cost: 'some value',
-    optimisedCost: 'some value',
+  {
+    cement: '123',
+    blastFurn: '12319',
+    flyAsh: '0928',
+    water: '234',
+    superplasticizer: '131',
+    coarseAggregate: '342',
+    fineAggregate: '234098',
+    age: '290348',
+    ucs: '324',
+    optimisedUcs: '12312',
+    cost: '123443',
+    optimisedCost: '123123',
   },
-  water: {
-    blastFurn: 'some value',
-    flyAsh: 'some value',
-    water: 'some value',
-    superplasticizer: 'some value',
-    coarseAggregate: 'some value',
-    fineAggregate: 'some value',
-    age: 'some value',
-    ucs: 'some value',
-    optimisedUcs: 'some value',
-    cost: 'some value',
-    optimisedCost: 'some value',
+  {
+    cement: '123',
+    blastFurn: '12319',
+    flyAsh: '0928',
+    water: '234',
+    superplasticizer: '131',
+    coarseAggregate: '342',
+    fineAggregate: '234098',
+    age: '290348',
+    ucs: '324',
+    optimisedUcs: '12312',
+    cost: '123443',
+    optimisedCost: '123123',
   },
-  superplasticizer: {
-    blastFurn: 'some value',
-    flyAsh: 'some value',
-    water: 'some value',
-    superplasticizer: 'some value',
-    coarseAggregate: 'some value',
-    fineAggregate: 'some value',
-    age: 'some value',
-    ucs: 'some value',
-    optimisedUcs: 'some value',
-    cost: 'some value',
-    optimisedCost: 'some value',
+  {
+    cement: '123',
+    blastFurn: '12319',
+    flyAsh: '0928',
+    water: '234',
+    superplasticizer: '131',
+    coarseAggregate: '342',
+    fineAggregate: '234098',
+    age: '290348',
+    ucs: '324',
+    optimisedUcs: '12312',
+    cost: '123443',
+    optimisedCost: '123123',
   },
-  coarseAggregate: {
-    blastFurn: 'some value',
-    flyAsh: 'some value',
-    water: 'some value',
-    superplasticizer: 'some value',
-    coarseAggregate: 'some value',
-    fineAggregate: 'some value',
-    age: 'some value',
-    ucs: 'some value',
-    optimisedUcs: 'some value',
-    cost: 'some value',
-    optimisedCost: 'some value',
+  {
+    cement: '123',
+    blastFurn: '12319',
+    flyAsh: '0928',
+    water: '234',
+    superplasticizer: '131',
+    coarseAggregate: '342',
+    fineAggregate: '234098',
+    age: '290348',
+    ucs: '324',
+    optimisedUcs: '12312',
+    cost: '123443',
+    optimisedCost: '123123',
   },
-  fineAggregate: {
-    blastFurn: 'some value',
-    flyAsh: 'some value',
-    water: 'some value',
-    superplasticizer: 'some value',
-    coarseAggregate: 'some value',
-    fineAggregate: 'some value',
-    age: 'some value',
-    ucs: 'some value',
-    optimisedUcs: 'some value',
-    cost: 'some value',
-    optimisedCost: 'some value',
+  {
+    cement: '123',
+    blastFurn: '12319',
+    flyAsh: '0928',
+    water: '234',
+    superplasticizer: '131',
+    coarseAggregate: '342',
+    fineAggregate: '234098',
+    age: '290348',
+    ucs: '324',
+    optimisedUcs: '12312',
+    cost: '123443',
+    optimisedCost: '123123',
   },
-  age: {
-    blastFurn: 'some value',
-    flyAsh: 'some value',
-    water: 'some value',
-    superplasticizer: 'some value',
-    coarseAggregate: 'some value',
-    fineAggregate: 'some value',
-    age: 'some value',
-    ucs: 'some value',
-    optimisedUcs: 'some value',
-    cost: 'some value',
-    optimisedCost: 'some value',
+  {
+    cement: '123',
+    blastFurn: '12319',
+    flyAsh: '0928',
+    water: '234',
+    superplasticizer: '131',
+    coarseAggregate: '342',
+    fineAggregate: '234098',
+    age: '290348',
+    ucs: '324',
+    optimisedUcs: '12312',
+    cost: '123443',
+    optimisedCost: '123123',
   },
-};
+];
 const callPopulateTableWithFakeResults = () => {
   populateOptimisationResultsTable(fakeResults);
 };
@@ -196,11 +215,11 @@ const callPopulateTableWithFakeResults = () => {
 //Write a function that clears the optimisation results table
 
 const clearOptimisationResults = () => {
-  const tableBodyDataElements = document.querySelectorAll(
-    '#optimisation-results-table tbody tr td[data-datatype]'
+  const tableBodyRowElements = document.querySelectorAll(
+    '#optimisation-results-table tbody tr'
   );
 
-  tableBodyDataElements.forEach((dataElement) => {
-    dataElement.textContent = '';
+  tableBodyRowElements.forEach((rowElement) => {
+    rowElement.remove()
   });
 };
