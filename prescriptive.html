@@ -176,77 +176,143 @@
     </form>
 
     <!-- Result Section Form -->
-    <div class="container rounded mt-5">
+    <div class="container-fluid rounded mt-5">
         <div id="input-section" class="p-3">
             <h4 class="mb-4 text-center"> OPTIMISATION RESULTS</h4>
-            <table id="optimisation-results-table" class="table table-hover table-bordered text-center table-responsive-sm">
-                <thead class="thead-dark">
-                    <tr>
-                        <th scope="col">CEMENT</th>
-                        <th scope="col">BLAST FURN</th>
-                        <th scope="col">FLY ASH</th>
-                        <th scope="col">WATER</th>
-                        <th scope="col">SUPERPLASTICIZER</th>
-                        <th scope="col">COARSE AGGREGATE</th>
-                        <th scope="col">FINE AGGREGATE</th>
-                        <th scope="col">AGE</th>
-                        <th scope="col">UCS</th>
-                        <th scope="col">OPTIMISED UCS</th>
-                        <th scope="col">COST</th>
-                        <th scope="col">OPTIMISED COST</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr data-row="cement" class="table-light">
-                        <th scope="row">Cement</th>
-                        <td data-datatype="optimisationStatus"></td>
-                        <td data-datatype="inputValue"></td>
-                        <td data-datatype="prescribedValue"></td>
-                    </tr>
-                    <tr data-row="blastFurn" class="table-light">
-                        <th scope="row">Blast Furn</th>
-                        <td data-datatype="optimisationStatus"></td>
-                        <td data-datatype="inputValue"></td>
-                        <td data-datatype="prescribedValue"></td>
-                    </tr>
-                    <tr data-row="flyAsh" class="table-light">
-                        <th scope="row">Fly Ash</th>
-                        <td data-datatype="optimisationStatus"></td>
-                        <td data-datatype="inputValue"></td>
-                        <td data-datatype="prescribedValue"></td>
-                    </tr>
-                    <tr data-row="water" class="table-light">
-                        <th scope="row">Water</th>
-                        <td data-datatype="optimisationStatus"></td>
-                        <td data-datatype="inputValue"></td>
-                        <td data-datatype="prescribedValue"></td>
-                    </tr>
-                    <tr data-row="superplasticizer" class="table-light">
-                        <th scope="row">Superplasticizer</th>
-                        <td data-datatype="optimisationStatus"></td>
-                        <td data-datatype="inputValue"></td>
-                        <td data-datatype="prescribedValue"></td>
-                    </tr>
-                    <tr data-row="coarseAggregate" class="table-light">
-                        <th scope="row">Coarse Aggregate</th>
-                        <td data-datatype="optimisationStatus"></td>
-                        <td data-datatype="inputValue"></td>
-                        <td data-datatype="prescribedValue"></td>
-                    </tr>
-                    <tr data-row="fineAggregate" class="table-light">
-                        <th scope="row">Fine Aggregate</th>
-                        <td data-datatype="optimisationStatus"></td>
-                        <td data-datatype="inputValue"></td>
-                        <td data-datatype="prescribedValue"></td>
-                    </tr>
-                    <tr data-row="age" class="table-light">
-                        <th scope="row">Age</th>
-                        <td data-datatype="optimisationStatus"></td>
-                        <td data-datatype="inputValue"></td>
-                        <td data-datatype="prescribedValue"></td>
-                    </tr>
-                </tbody>
-            </table>  
+            <div class="table-responsive">
+                <table id="optimisation-results-table" class="table table-hover table-bordered text-center table-responsive-sm">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th scope="col">CEMENT</th>
+                            <th scope="col">BLAST FURN</th>
+                            <th scope="col">FLY ASH</th>
+                            <th scope="col">WATER</th>
+                            <th scope="col">SUPERPLASTICIZER</th>
+                            <th scope="col">COARSE AGGREGATE</th>
+                            <th scope="col">FINE AGGREGATE</th>
+                            <th scope="col">AGE</th>
+                            <th scope="col">UCS</th>
+                            <th scope="col">OPTIMISED UCS</th>
+                            <th scope="col">COST</th>
+                            <th scope="col">OPTIMISED COST</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr data-row="cement" class="table-light">
+                            <th scope="row">Cement</th>
+                            <td data-datatype="blastFurn"></td>
+                            <td data-datatype="flyAsh"></td>
+                            <td data-datatype="water"></td>
+                            <td data-datatype="superplasticizer"></td>
+                            <td data-datatype="coarseAggregate"></td>
+                            <td data-datatype="fineAggregate"></td>
+                            <td data-datatype="age"></td>
+                            <td data-datatype="ucs"></td>
+                            <td data-datatype="optimisedUcs"></td>
+                            <td data-datatype="cost"></td>
+                            <td data-datatype="optimisedCost"></td>
+                        </tr>
+                        <tr data-row="blastFurn" class="table-light">
+                            <th scope="row">Blast Furn</th>
+                            <td data-datatype="blastFurn"></td>
+                            <td data-datatype="flyAsh"></td>
+                            <td data-datatype="water"></td>
+                            <td data-datatype="superplasticizer"></td>
+                            <td data-datatype="coarseAggregate"></td>
+                            <td data-datatype="fineAggregate"></td>
+                            <td data-datatype="age"></td>
+                            <td data-datatype="ucs"></td>
+                            <td data-datatype="optimisedUcs"></td>
+                            <td data-datatype="cost"></td>
+                            <td data-datatype="optimisedCost"></td>
+                        </tr>
+                        <tr data-row="flyAsh" class="table-light">
+                            <th scope="row">Fly Ash</th>
+                            <td data-datatype="blastFurn"></td>
+                            <td data-datatype="flyAsh"></td>
+                            <td data-datatype="water"></td>
+                            <td data-datatype="superplasticizer"></td>
+                            <td data-datatype="coarseAggregate"></td>
+                            <td data-datatype="fineAggregate"></td>
+                            <td data-datatype="age"></td>
+                            <td data-datatype="ucs"></td>
+                            <td data-datatype="optimisedUcs"></td>
+                            <td data-datatype="cost"></td>
+                            <td data-datatype="optimisedCost"></td>
+                        </tr>
+                        <tr data-row="water" class="table-light">
+                            <th scope="row">Water</th>
+                            <td data-datatype="blastFurn"></td>
+                            <td data-datatype="flyAsh"></td>
+                            <td data-datatype="water"></td>
+                            <td data-datatype="superplasticizer"></td>
+                            <td data-datatype="coarseAggregate"></td>
+                            <td data-datatype="fineAggregate"></td>
+                            <td data-datatype="age"></td>
+                            <td data-datatype="ucs"></td>
+                            <td data-datatype="optimisedUcs"></td>
+                            <td data-datatype="cost"></td>
+                            <td data-datatype="optimisedCost"></td>
+                        </tr>
+                        <tr data-row="superplasticizer" class="table-light">
+                            <th scope="row">Superplasticizer</th>
+                            <td data-datatype="blastFurn"></td>
+                            <td data-datatype="flyAsh"></td>
+                            <td data-datatype="water"></td>
+                            <td data-datatype="superplasticizer"></td>
+                            <td data-datatype="coarseAggregate"></td>
+                            <td data-datatype="fineAggregate"></td>
+                            <td data-datatype="age"></td>
+                            <td data-datatype="ucs"></td>
+                            <td data-datatype="optimisedUcs"></td>
+                            <td data-datatype="cost"></td>
+                            <td data-datatype="optimisedCost"></td>
+                        </tr>
+                        <tr data-row="coarseAggregate" class="table-light">
+                            <th scope="row">Coarse Aggregate</th>
+                            <td data-datatype="blastFurn"></td>
+                            <td data-datatype="flyAsh"></td>
+                            <td data-datatype="water"></td>
+                            <td data-datatype="superplasticizer"></td>
+                            <td data-datatype="coarseAggregate"></td>
+                            <td data-datatype="fineAggregate"></td>
+                            <td data-datatype="age"></td>
+                            <td data-datatype="ucs"></td>
+                            <td data-datatype="optimisedUcs"></td>
+                            <td data-datatype="cost"></td>
+                            <td data-datatype="optimisedCost"></td>
+                        </tr>
+                        <tr data-row="fineAggregate" class="table-light">
+                            <th scope="row">Fine Aggregate</th>
+                            <td data-datatype="blastFurn"></td>
+                            <td data-datatype="flyAsh"></td>
+                            <td data-datatype="water"></td>
+                            <td data-datatype="superplasticizer"></td>
+                            <td data-datatype="coarseAggregate"></td>
+                            <td data-datatype="fineAggregate"></td>
+                            <td data-datatype="age"></td>
+                            <td data-datatype="ucs"></td>
+                            <td data-datatype="optimisedUcs"></td>
+                            <td data-datatype="cost"></td>
+                            <td data-datatype="optimisedCost"></td>
+                        </tr>
+                        <tr data-row="age" class="table-light">
+                            <th scope="row">Age</th>
+                            <td data-datatype="blastFurn"></td>
+                            <td data-datatype="flyAsh"></td>
+                            <td data-datatype="water"></td>
+                            <td data-datatype="superplasticizer"></td>
+                            <td data-datatype="coarseAggregate"></td>
+                            <td data-datatype="fineAggregate"></td>
+                            <td data-datatype="age"></td>
+                            <td data-datatype="ucs"></td>
+                            <td data-datatype="optimisedUcs"></td>
+                            <td data-datatype="cost"></td>
+                            <td data-datatype="optimisedCost"></td>
+                        </tr>
+                    </tbody>
+                </table>  
+            </div>
             <!-- fake button to test populating of table, delete after population function has been tested -->
             <button onclick="callPopulateTableWithFakeResults()">test populating</button>
             <!-- fake button to test populating of table, delete after population function has been tested -->
