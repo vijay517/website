@@ -169,52 +169,18 @@ const testPopulatePredictiveModels = () =>
  * 
  */
 
-
 /* Globabl variables */
 
 //AWS CognitioCredentials
 var CognitioCredentials = {
-  poolId: 'us-east-2:df51fc61-e512-4543-b81d-d1af4db80644',
-  endpoint: 'xendpointx',
-  region: 'us-east-2'
+  poolId: '',
+  endpoint: '',
+  region: ''
 };
 
 //S3 Bucket Configurations
 var S3Bucket = {
-  bucketName: "fypcementbucket",
-}
-
-//Array that holds info about all the models in the cloud
-var PredictiveModels = []
-
-//Json object that holds the model name as its key and the model path as its value
-var modelPaths = {}
-
-/* Methods */
-
-// Initialize the configuration.
-AWS.config.update({
-  region: CognitioCredentials.region,
-  credentials: new AWS.CognitoIdentityCredentials({
-    IdentityPoolId: CognitioCredentials.poolId
-  })
-});
-
-//Initialise S3 client
-var s3 = new AWS.S3();
-
-/* Globabl variables */
-
-//AWS CognitioCredentials
-var CognitioCredentials = {
-  poolId: 'us-east-2:df51fc61-e512-4543-b81d-d1af4db80644',
-  endpoint: 'abno170pso3ez-ats.iot.us-east-2.amazonaws.com',
-  region: 'us-east-2'
-};
-
-//S3 Bucket Configurations
-var S3Bucket = {
-  bucketName: "fypcementbucket",
+  bucketName: "",
 }
 
 //Array that holds info about all the models in the cloud
@@ -280,7 +246,7 @@ const GetModelPath = () => {
   });
 }
 
-GetModelPath()
+//GetModelPath()
 
 
 /**
@@ -392,11 +358,11 @@ function Deploy_Model(modelName) {
       //--- Send a MQTT message to the ec2 instance to deploy the model ----
       if (document.getElementsByTagName('td')[0].innerText.toUpperCase() === 'NIL') {
         //No model is present. Thus we will creating a new model endpoint
-        Publish_to_MQTT_Topic('webuser/service/input', { "service_no": 2, "service_name": "Deploy model", "service_input_payload": null });
+        Publish_to_MQTT_Topic('webuser/service/input', { "service_no": 2, "service_name": "Deploy model", "service_input_payload": payload });
       }
       else {
         //A model is already active. Thus we will be updating the model endpoint
-        Publish_to_MQTT_Topic('webuser/service/input', { "service_no": 3, "service_name": "Deploy model", "service_input_payload": null });
+        Publish_to_MQTT_Topic('webuser/service/input', { "service_no": 3, "service_name": "Deploy model", "service_input_payload": payload });
       }
     }
     else {
@@ -465,21 +431,5 @@ const InitialiseMQTTClient = () => {
   });
 }
 
-InitialiseMQTTClient();
+//InitialiseMQTTClient();
 
-
-/*
-
-$aws/things/predictiveModel/shadow/update
-$aws/things/predictiveModel/shadow/get/accepted
-{
-  "state": {
-    "desired": {
-      "Name": "test_model",
-      "Accuracy": "on",
-      "Status": "InService"
-    }
-  }
-}
-
-*/
